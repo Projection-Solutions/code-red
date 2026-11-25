@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stored Personnel Submissions</title>
+  <style>
+    :root {
+      --bg-page: #f4f6f9;
+      --bg-card: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --badge-mil-bg: #dbeafe;
+      --badge-mil-text: #1e40af;
+      --badge-con-bg: #fef3c7;
+      --badge-con-text: #92400e;
+      --badge-gs-bg: #dcfce7;
+      --badge-gs-text: #166534;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.55rem 1.1rem;
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      padding: 0.55rem 1rem;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f1f5f9;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    input[type="text"],
+    select {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+    }
+
+    #searchInput {
+      min-width: 240px;
+      flex: 1;
+    }
+
+    .stats-bar {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    thead {
+      background-color: #f8fafc;
+      border-bottom: 2px solid var(--border);
+    }
+
+    th {
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: var(--text-main);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-Military {
+      background-color: var(--badge-mil-bg);
+      color: var(--badge-mil-text);
+    }
+
+    .badge-Contractor {
+      background-color: var(--badge-con-bg);
+      color: var(--badge-con-text);
+    }
+
+    .badge-GS {
+      background-color: var(--badge-gs-bg);
+      color: var(--badge-gs-text);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Stored Personnel Submissions</h1>
+      <div class="header-actions">
+        <button type="button" id="refreshBtn" class="btn-secondary">Refresh Data</button>
+        <a href="form.html" class="btn-primary">+ New Submission</a>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="toolbar">
+        <div class="search-group">
+          <input type="text" id="searchInput" placeholder="Search by name..." />
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="Military">Military</option>
+            <option value="Contractor">Contractor</option>
+            <option value="GS">GS</option>
+          </select>
+          <select id="sectionFilter">
+            <option value="">All Sections</option>
+            <option value="Operations">Operations</option>
+            <option value="Education">Education</option>
+            <option value="Support">Support</option>
+            <option value="Surgery">Surgery</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <span id="recordCount">Loading records...</span>
+        <span>Source: <code id="sourceLabel">./submissions.json</code></span>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name (Last, First M.)</th>
+            <th>Employment Status</th>
+            <th>Service Section</th>
+            <th>Submitted (Local Time)</th>
+          </tr>
+        </thead>
+        <tbody id="recordsBody">
+          <tr>
+            <td colspan="5" class="empty-state">Loading records from repository...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Default public JSON path relative to GitHub Pages root; can be overridden via ?file=path/to/file.json
+    const urlParams = new URLSearchParams(window.location.search);
+    const JSON_FILE_PATH = urlParams.get('file') || 'submissions.json';
+
+    const recordsBody = document.getElementById('recordsBody');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const sectionFilter = document.getElementById('sectionFilter');
+    const recordCount = document.getElementById('recordCount');
+    const sourceLabel = document.getElementById('sourceLabel');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    sourceLabel.textContent = `./${JSON_FILE_PATH}`;
+
+    let allRecords = [];
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str ?? '';
+      return div.innerHTML;
+    }
+
+    function formatDate(isoString) {
+      if (!isoString) return '—';
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return escapeHtml(isoString);
+      return d.toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function renderTable() {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedStatus = statusFilter.value;
+      const selectedSection = sectionFilter.value;
+
+      const filtered = allRecords.filter(rec => {
+        const matchesName = (rec.name || '').toLowerCase().includes(query);
+        const matchesStatus = !selectedStatus || rec.employmentStatus === selectedStatus;
+        const matchesSection = !selectedSection || rec.serviceSection === selectedSection;
+        return matchesName && matchesStatus && matchesSection;
+      });
+
+      recordCount.textContent = `Showing ${filtered.length} of ${allRecords.length} total record(s)`;
+
+      if (filtered.length === 0) {
+        recordsBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">
+              ${allRecords.length === 0
+                ? 'No submissions found yet. Use the "+ New Submission" button to add the first record.'
+                : 'No records match your current search or filter criteria.'}
+            </td>
+          </tr>`;
+        return;
+      }
+
+      recordsBody.innerHTML = filtered.map((rec, idx) => {
+        const statusClass = `badge-${rec.employmentStatus || 'GS'}`;
+        return `
+          <tr>
+            <td>${idx + 1}</td>
+            <td><strong>${escapeHtml(rec.name)}</strong></td>
+            <td><span class="badge ${escapeHtml(statusClass)}">${escapeHtml(rec.employmentStatus)}</span></td>
+            <td>${escapeHtml(rec.serviceSection)}</td>
+            <td>${formatDate(rec.submittedAt)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadRecords() {
+      refreshBtn.disabled = true;
+      refreshBtn.textContent = 'Refreshing...';
+
+      try {
+        // Cache-bust query string ensures GitHub Pages CDN serves the latest deployed JSON
+        const response = await fetch(`./${JSON_FILE_PATH}?t=${Date.now()}`, {
+          cache: 'no-store'
+        });
+
+        if (response.status === 404) {
+          allRecords = [];
+          renderTable();
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} while fetching ${JSON_FILE_PATH}`);
+        }
+
+        const data = await response.json();
+        allRecords = Array.isArray(data) ? data : [];
+        renderTable();
+      } catch (err) {
+        recordCount.textContent = 'Error loading records';
+        recordsBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state" style="color: #991b1b;">
+              Unable to load <code>${escapeHtml(JSON_FILE_PATH)}</code>: ${escapeHtml(err.message)}
+            </td>
+          </tr>`;
+      } finally {
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = 'Refresh Data';
+      }
+    }
+
+    searchInput.addEventListener('input', renderTable);
+    statusFilter.addEventListener('change', renderTable);
+    sectionFilter.addEventListener('change', renderTable);
+    refreshBtn.addEventListener('click', loadRecords);
+
+    window.addEventListener('DOMContentLoaded', loadRecords);
+  </script>
+</body>
+</html>
